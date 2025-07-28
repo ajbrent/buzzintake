@@ -5,7 +5,7 @@ services:
     ports:
       - "8181:8181"
     volumes:
-      - ./data:/home/iceberg/warehouse
+      - ~/numbuzz-test-data/iceberg-rest:/home/iceberg/warehouse
 
   iceberg-init:
     image: curlimages/curl:latest
@@ -25,8 +25,8 @@ services:
       - ICEBERG_WAREHOUSE=/home/iceberg/warehouse
       - JAVA_OPTS=-Xmx2g -Xms1g
     volumes:
-      - ./stage_data:/home/iceberg/warehouse
-      - ./data:/app/data:ro 
+      - ~/numbuzz-test-data/buzzintake-stage_data:/home/iceberg/warehouse
+      - ~/numbuzz-test-data/buzzintake-app-data:/app/data:ro 
     command: ["20250101000000"]  # Default date suffix, can be overridden
 volumes:
   iceberg-data:

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,7 +40,7 @@ public record TableBuilder(String[] inputFields, TableBuilder.TableDef[] tableDe
         private final String name;
         private final ColumnGroupDef[] columnGroupDefs;
         private final Schema schema;
-        private List<GenericRecord> records = new ArrayList<>();
+        private final List<GenericRecord> records = new ArrayList<>();
         private final FileFormat format = FileFormat.PARQUET;
 
         public TableDef(String name, ColumnGroupDef[] columnGroupDefs) {
@@ -250,7 +251,7 @@ public record TableBuilder(String[] inputFields, TableBuilder.TableDef[] tableDe
         }
 
         public void commitFile(File tmpFile, Table table) {
-            logger.info("Committing file " + tmpFile.getPath() + " to table " + table.name());
+            logger.log(Level.INFO, "Committing file {0} to table {1}", new Object[]{tmpFile.getPath(), table.name()});
             DataFile dataFile = DataFiles.builder(table.spec())
                     .withPath(tmpFile.getPath())
                     .withFormat(format)
@@ -294,9 +295,9 @@ public record TableBuilder(String[] inputFields, TableBuilder.TableDef[] tableDe
                 File tmpFile = tableDef.recordsToFile();
                 Table table = tableDef.getTable(catalog);
                 tableDef.commitFile(tmpFile, table);
-                logger.info("Committed file " + tmpFile.getPath() + " to table " + table.name());
+                logger.log(Level.INFO, "Committed file {0} to table {1}", new Object[]{tmpFile.getPath(), table.name()});
             } catch (IOException e) {
-                logger.severe("Failed appending records to table " + tableDef.getName()+ " " + e);
+                logger.log(Level.SEVERE, "Failed appending records to table {0} {1}", new Object[]{tableDef.getName(), e});
             }
 
         }

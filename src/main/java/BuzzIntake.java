@@ -1,28 +1,29 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.iceberg.catalog.Catalog;
-import org.apache.iceberg.rest.RESTCatalog;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.csv.CSVRecord;
+import org.apache.iceberg.catalog.Catalog;
+import org.apache.iceberg.rest.RESTCatalog;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class BuzzIntake {
     private static final Logger logger = Logger.getLogger(TableBuilder.class.getName());
     public static void main(String[] args) {
         Controller controller;
-        if (args.length == 1) {
-            controller = new Controller(args[0]);
-        } else if (args.length == 3) {
-            controller = new Controller(args[0], args[1], args[2]);
-        } else if (args.length == 2) {
-            controller = new Controller(args[0], args[1]);
-        } else {
-            logger.severe("Invalid number of arguments: " + args.length);
-            return;
+        switch (args.length) {
+            case 1 -> controller = new Controller(args[0]);
+            case 3 -> controller = new Controller(args[0], args[1], args[2]);
+            case 2 -> controller = new Controller(args[0], args[1]);
+            default -> {
+                logger.log(Level.SEVERE, "Invalid number of arguments: {0}", args.length);
+                return;
+            }
         }
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(TableBuilder.class, new TableBuilderAdapter())
@@ -31,7 +32,7 @@ public class BuzzIntake {
         try (FileReader reader = new FileReader("resources/gdelt_og_schema.json")) {
             tableBuilder = gson.fromJson(reader, TableBuilder.class);
         } catch(IOException e) {
-            logger.severe("Failed to read gdelt_og_schema.json: " + e);
+            logger.log(Level.SEVERE, "Failed to read gdelt_og_schema.json: {0}", e);
             return;
         }
         Catalog catalog = new RESTCatalog();
@@ -47,9 +48,9 @@ public class BuzzIntake {
         GDELTCollector gdc = new GDELTCollector();
         for (String dtSuffix : controller.getDtStrings()) {
             Iterable<CSVRecord> csvRecords = gdc.processCSV(tableBuilder.inputFields(), dtSuffix);
-            logger.info("Created records for " + dtSuffix);
+            logger.log(Level.INFO, "Created records for {0}", dtSuffix);
             tableBuilder.populateTables(csvRecords, catalog);
-            logger.info("Populated tables for " + dtSuffix);
+            logger.log(Level.INFO, "Populated tables for {0}", dtSuffix);
         }
     }
 }

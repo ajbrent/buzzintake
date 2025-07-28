@@ -133,7 +133,7 @@
             "location_feature_id",
             "char_offset"
           ],
-          "types": ["str", "int", "str", "int", "str", "str", "str", "float", "float", "str", "int"],
+          "types": ["str", "float", "str", "int", "str", "str", "str", "float", "float", "str", "int"],
           "fieldIds": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
           "isRegex": true,
           "regexp": "([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#;]*)(?:;|$)",
