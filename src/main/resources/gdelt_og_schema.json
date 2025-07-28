@@ -1,0 +1,418 @@
+{
+  "inputFields": [
+    "record_id",
+    "coll_date",
+    "src_collection_id",
+    "src_common_name",
+    "doc_id",
+    "counts1",
+    "counts2",
+    "themes1",
+    "themes2",
+    "locations1",
+    "locations2",
+    "persons1",
+    "persons2",
+    "orgs1",
+    "orgs2",
+    "tone",
+    "dates",
+    "gcam",
+    "sharing_image",
+    "related_images",
+    "social_image_embeds",
+    "social_video_embeds",
+    "quotations",
+    "all_names",
+    "amounts",
+    "translation_info",
+    "extras_xml"
+  ],
+  "tableDefs": [
+    {
+      "name": "articles",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "coll_date",
+          "names": ["collection_time"],
+          "types": ["str"],
+          "fieldIds": [2],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "src_collection_id",
+          "names": ["src_collection_id"],
+          "types": ["str"],
+          "fieldIds": [3],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "src_common_name",
+          "names": ["src_name"],
+          "types": ["str"],
+          "fieldIds": [4],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "doc_id",
+          "names": ["doc_id"],
+          "types": ["str"],
+          "fieldIds": [5],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "tone",
+          "names": ["tone", "positive_score", "negative_score", "polarity", "activity_reference_density", "self_group_reference_density", "word_count"],
+          "types": ["float", "float", "float", "float", "float", "float", "int"],
+          "fieldIds": [6, 7, 8, 9, 10, 11, 12],
+          "isRegex": true,
+          "regexp": "^(-?\\d*(?:\\.\\d*)?),(-?\\d*(?:\\.\\d*)?),(-?\\d*(?:\\.\\d*)?),(-?\\d*(?:\\.\\d*)?),(-?\\d*(?:\\.\\d*)?),(-?\\d*(?:\\.\\d*)?),(-?\\d*(?:\\.?\\d*)?)$",
+          "single": true
+        },
+        {
+          "from": "translation_info",
+          "names": ["translation_info"],
+          "types": ["str"],
+          "fieldIds": [13],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "extras_xml",
+          "names": ["extras_xml"],
+          "types": ["str"],
+          "fieldIds": [14],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "gcam",
+          "names": ["gcam"],
+          "types": ["str"],
+          "fieldIds": [15],
+          "isRegex": false,
+          "single": true
+        }
+      ]
+    },
+    {
+      "name": "counts",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "counts2",
+          "names": [
+            "count_type",
+            "count",
+            "object_type",
+            "location_type",
+            "location_full_name",
+            "location_country_code",
+            "location_adm1_code",
+            "location_latitude",
+            "location_longitude",
+            "location_feature_id",
+            "char_offset"
+          ],
+          "types": ["str", "int", "str", "int", "str", "str", "str", "float", "float", "str", "int"],
+          "fieldIds": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+          "isRegex": true,
+          "regexp": "([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#]*)#([^#;]*)(?:;|$)",
+          "single": false
+        }
+      ]
+    },
+    {
+      "name": "themes",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "themes2",
+          "names": ["gkg_theme", "char_offset"],
+          "types": ["str", "int"],
+          "fieldIds": [2, 3],
+          "isRegex": true,
+          "regexp": "(\\w+),(\\w+)(?:;|$)",
+          "single": false
+        }
+      ]
+    },
+    {
+      "name": "locations",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "locations2",
+          "names": [
+            "location_type",
+            "location_full_name",
+            "location_country_code",
+            "location_adm1_code",
+            "location_adm2_code",
+            "location_latitude",
+            "location_longitude",
+            "location_feature_id",
+            "char_offset"
+          ],
+          "types": ["int", "str", "str", "str", "str", "float", "float", "str", "int"],
+          "fieldIds": [2, 3, 4, 5, 6, 7, 8, 9, 10],
+          "isRegex": true,
+          "regexp": "(\\d*)#([^#]*)#(\\w*)#(\\w*)#([^#]*)#((?:-?\\d*\\.?\\d*)*)#((?:-?\\d*\\.?\\d*)*)#([^#]*)#(\\d*)(?:;|$)",
+          "single": false
+        }
+      ]
+    },
+    {
+      "name": "persons",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "persons2",
+          "names": ["person_name", "char_offset"],
+          "types": ["str", "int"],
+          "fieldIds": [2, 3],
+          "isRegex": true,
+          "regexp": "((?:\\w*\\s?)*),(\\d*)(?:;|$)",
+          "single": false
+        }
+      ]
+    },
+    {
+      "name": "organizations",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "orgs2",
+          "names": ["organization_name", "char_offset"],
+          "types": ["str", "int"],
+          "fieldIds": [2, 3],
+          "isRegex": true,
+          "regexp": "((?:\\w*\\s?)*),(\\d*)(?:;|$)",
+          "single": false
+        }
+      ]
+    },
+    {
+      "name": "dates",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "dates",
+          "names": ["date_resolution", "month", "day", "year", "char_offset"],
+          "types": ["str", "int", "int", "int", "int"],
+          "fieldIds": [2, 3, 4, 5, 6],
+          "isRegex": true,
+          "regexp": "(\\d)#(\\d*)#(\\d*)#(\\d*)#(\\d*)(?:;|$)",
+          "single": false
+        }
+      ]
+    },
+    {
+      "name": "related_images",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "related_images",
+          "names": ["url"],
+          "types": ["str"],
+          "fieldIds": [2],
+          "isRegex": true,
+          "regexp": "([^;]+)(?:;|$)",
+          "single": false
+        }
+      ]
+    },
+    {
+      "name": "sharing_images",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "sharing_image",
+          "names": ["url"],
+          "types": ["str"],
+          "fieldIds": [2],
+          "isRegex": false,
+          "single": true
+        }
+      ]
+    },
+    {
+      "name": "social_image_embeds",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "social_image_embeds",
+          "names": ["url"],
+          "types": ["str"],
+          "fieldIds": [2],
+          "isRegex": true,
+          "regexp": "([^;]+)(?:;|$)",
+          "single": false
+        }
+      ]
+    },
+    {
+      "name": "social_video_embeds",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "social_video_embeds",
+          "names": ["url"],
+          "types": ["str"],
+          "fieldIds": [2],
+          "isRegex": true,
+          "regexp": "([^;]+)(?:;|$)",
+          "single": false
+        }
+      ]
+    },
+    {
+      "name": "quotations",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "quotations",
+          "names": ["char_offset", "length", "verb", "quote"],
+          "types": ["int", "int", "str", "str"],
+          "fieldIds": [2, 3, 4, 5],
+          "isRegex": true,
+          "regexp": "(\\d*)\\|(\\d*)\\|(\\w*)\\|([^\\|#]*)(?:#|$)",
+          "single": false
+        }
+      ]
+    },
+    {
+      "name": "all_names",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "all_names",
+          "names": ["name", "char_offset"],
+          "types": ["str", "int"],
+          "fieldIds": [2, 3],
+          "isRegex": true,
+          "regexp": "([^,]*),(\\d*)(?:;|$)",
+          "single": false
+        }
+      ]
+    },
+    {
+      "name": "amounts",
+      "columnGroups": [
+        {
+          "from": "record_id",
+          "names": ["record_id"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "amounts",
+          "names": ["amount", "object", "char_offset"],
+          "types": ["float", "str", "int"],
+          "fieldIds": [2, 3, 4],
+          "isRegex": true,
+          "regexp": "(\\d+),([^,;]*),(\\d*)(?:;|$)",
+          "single": false
+        }
+      ]
+    }
+  ]
+}

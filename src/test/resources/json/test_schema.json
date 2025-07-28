@@ -1,0 +1,30 @@
+{
+  "inputFields": [
+    "col_a",
+    "col_b"
+  ],
+  "tableDefs": [
+    {
+      "name": "table_one",
+      "columnGroups": [
+        {
+          "from": "col_a",
+          "names": ["col_1"],
+          "types": ["str"],
+          "fieldIds": [1],
+          "isRegex": false,
+          "single": true
+        },
+        {
+          "from": "col_b",
+          "names": ["col_2", "col_3"],
+          "types": ["float", "int"],
+          "fieldIds": [2, 3],
+          "isRegex": true,
+          "regexp": "^(-?\\\\d*(?:\\\\.\\\\d*)?),(\\d*)",
+          "single": false
+        }
+      ]
+    }
+  ]
+}

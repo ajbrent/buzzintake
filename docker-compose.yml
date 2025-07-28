@@ -1,0 +1,35 @@
+services:
+  iceberg-rest:
+    image: tabulario/iceberg-rest:latest
+    container_name: iceberg-rest
+    ports:
+      - "8181:8181"
+    volumes:
+      - ./data:/home/iceberg/warehouse
+
+  iceberg-init:
+    image: curlimages/curl:latest
+    depends_on:
+      - iceberg-rest
+    volumes:
+      - ./init_iceberg_tables.sh:/init_iceberg_tables.sh:ro
+    entrypoint: [ "sh", "/init_iceberg_tables.sh" ]
+
+  buzzintake:
+    build: .
+    container_name: buzzintake
+    depends_on:
+      - iceberg-init
+    environment:
+      - ICEBERG_REST_URI=http://iceberg-rest:8181/
+      - ICEBERG_WAREHOUSE=/home/iceberg/warehouse
+      - JAVA_OPTS=-Xmx2g -Xms1g
+    volumes:
+      - ./stage_data:/home/iceberg/warehouse
+      - ./data:/app/data:ro 
+    command: ["20250101000000"]  # Default date suffix, can be overridden
+volumes:
+  iceberg-data:
+    driver: local
+  buzzintake-data:
+    driver: local 
