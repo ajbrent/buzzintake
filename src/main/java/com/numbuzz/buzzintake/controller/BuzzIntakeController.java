@@ -82,18 +82,6 @@ public class BuzzIntakeController {
         }
     }
     
-    @PostMapping("/process-current")
-    public ResponseEntity<Map<String, Object>> processCurrent() {
-        try {
-            logger.log(Level.INFO, "Processing current 15-minute slot");
-            buzzIntakeService.processCurrent();
-            return ResponseEntity.ok(createSuccessResponse("Successfully processed current 15-minute slot"));
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error processing current request: {0}", e.getMessage());
-            return ResponseEntity.internalServerError().body(createErrorResponse(e.getMessage()));
-        }
-    }
-    
     @GetMapping("/health")
     public ResponseEntity<Map<String, Object>> health() {
         Map<String, Object> response = new HashMap<>();
