@@ -1,0 +1,11 @@
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Get ECR repo URL from Terraform output
+        run: |
+          aws s3 cp s3://<your-bucket>/<your-key> terraform.tfstate
+          ECR_URL=$(terraform output -state=terraform.tfstate buzz_intake_ecr_url)
+          echo "ECR URL: $ECR_URL"

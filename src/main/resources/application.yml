@@ -1,0 +1,23 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+iceberg:
+  rest:
+    uri: ${ICEBERG_REST_URI:http://iceberg-rest:8181}
+  warehouse: ${ICEBERG_WAREHOUSE:/app/warehouse}
+
+logging:
+  level:
+    com.numbuzz.buzzintake: INFO
+    root: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

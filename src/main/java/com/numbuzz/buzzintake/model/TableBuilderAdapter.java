@@ -1,10 +1,17 @@
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
+package com.numbuzz.buzzintake.model;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.TypeAdapter;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 public class TableBuilderAdapter extends TypeAdapter<TableBuilder>{
     private final Gson gson;
@@ -47,22 +54,15 @@ public class TableBuilderAdapter extends TypeAdapter<TableBuilder>{
     private TableBuilder.TableDef.ColumnGroupDef[] readColGroupDef(JsonArray jsonArray) throws IOException {
         TableBuilder.TableDef.ColumnGroupDef[] colArray = new TableBuilder.TableDef.ColumnGroupDef[jsonArray.size()];
         for(int i = 0; i<jsonArray.size(); i++) {
-
-            String[] names = null;
-            String[] types = null;
-            int[] fieldIds = null;
-            String from = null;
-            boolean isRegex = false;
-            boolean single = true;
             String regexp = null;
 
             JsonObject obj = jsonArray.get(i).getAsJsonObject();
-            names = gson.fromJson(obj.get("names"), listType);
-            types = gson.fromJson(obj.get("types"), listType);
-            fieldIds = gson.fromJson(obj.get("fieldIds"), new TypeToken<int[]>(){}.getType());
-            from = obj.get("from").getAsString();
-            isRegex = obj.get("isRegex").getAsBoolean();
-            single = obj.get("single").getAsBoolean();
+            String[] names = gson.fromJson(obj.get("names"), listType);
+            String[] types = gson.fromJson(obj.get("types"), listType);
+            int[] fieldIds = gson.fromJson(obj.get("fieldIds"), new TypeToken<int[]>(){}.getType());
+            String from = obj.get("from").getAsString();
+            boolean isRegex = obj.get("isRegex").getAsBoolean();
+            boolean single = obj.get("single").getAsBoolean();
             JsonElement regexpHolder = obj.get("regexp");
             if (regexpHolder != null) {
                 regexp = regexpHolder.getAsString();

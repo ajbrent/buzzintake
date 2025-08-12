@@ -1,3 +1,5 @@
+package com.numbuzz.buzzintake.model;
+
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

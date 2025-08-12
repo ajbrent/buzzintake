@@ -1,20 +1,23 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.apache.iceberg.types.Type;
-import org.apache.iceberg.types.Types;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.iceberg.types.Type;
+import org.apache.iceberg.types.Types;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
-class TableBuilderAdapterTest {
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.numbuzz.buzzintake.model.TableBuilder;
+import com.numbuzz.buzzintake.model.TableBuilderAdapter;
+
+public class TableBuilderAdapterTest {
     @Test
-    void testRead() {
+    public void testRead() {
         String[] expectedInputFields = {"col_a", "col_b"};
         String[] expectedTableNames = {"table_one"};
         String[][] expectedColFrom = {{"col_a", "col_b"}};

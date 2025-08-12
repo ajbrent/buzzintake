@@ -30,6 +30,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.numbuzz.buzzintake.model.TableBuilder;
+import com.numbuzz.buzzintake.model.TableBuilderAdapter;
 
 @Testcontainers
 public class FullPipelineTest {
@@ -71,7 +73,7 @@ public class FullPipelineTest {
     }
 
     @Test
-    void testFullPipelineWithTestInputFullCsv() throws Exception {
+    public void testFullPipelineWithTestInputFullCsv() throws Exception {
         // Read the test CSV file (same structure as GDELT data)
         List<CSVRecord> csvRecords = new ArrayList<>();
         try (InputStream is = getClass().getClassLoader()
@@ -118,7 +120,7 @@ public class FullPipelineTest {
                 assertNotNull(table.currentSnapshot(), 
                     "Table " + tableName + " should have a current snapshot");
                 
-                assertTrue(table.currentSnapshot().allManifests(table.io()).size() > 0,
+                assertTrue(!table.currentSnapshot().allManifests(table.io()).isEmpty(),
                     "Table " + tableName + " should have manifests");
 
                 verifyTableData(table, tableName);
@@ -141,12 +143,12 @@ public class FullPipelineTest {
         
         System.out.println("Table " + tableName + " contains " + records.size() + " records");
         
-        assertTrue(records.size() > 0, 
+        assertTrue(!records.isEmpty(), 
             "Table " + tableName + " should have data based on test input");
     }
 
     @Test
-    void testSpecificTableData() throws Exception {
+    public void testSpecificTableData() throws Exception {
         String[] tableNames = {
             "articles", "counts", "themes", "locations", "persons", 
             "organizations", "dates", "related_images", "sharing_images",

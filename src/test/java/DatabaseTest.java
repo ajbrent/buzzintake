@@ -1,26 +1,28 @@
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.apache.iceberg.catalog.Catalog;
-import org.apache.iceberg.rest.RESTCatalog;
-import org.apache.iceberg.Schema;
-import org.apache.iceberg.types.Types;
-import org.apache.iceberg.Table;
-import org.apache.iceberg.data.Record;
-import org.apache.iceberg.data.IcebergGenerics;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.Arguments;
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.iceberg.Schema;
+import org.apache.iceberg.Table;
+import org.apache.iceberg.catalog.Catalog;
+import org.apache.iceberg.data.IcebergGenerics;
+import org.apache.iceberg.data.Record;
+import org.apache.iceberg.rest.RESTCatalog;
+import org.apache.iceberg.types.Types;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import com.numbuzz.buzzintake.model.TableBuilder;
 
 @Testcontainers
 public class DatabaseTest {
@@ -30,7 +32,7 @@ public class DatabaseTest {
 
     @ParameterizedTest
     @MethodSource("provideColumnGroupDefs")
-    void testTableBuilderPopulateTablesWithIcebergRest(TableBuilder.TableDef.ColumnGroupDef[] columnGroupDefs) throws Exception {
+    public void testTableBuilderPopulateTablesWithIcebergRest(TableBuilder.TableDef.ColumnGroupDef[] columnGroupDefs) throws Exception {
         // Get mapped port for REST
         String restUri = String.format("http://localhost:%d", icebergContainer.getMappedPort(8181));
         String warehouse = System.getProperty("java.io.tmpdir") + "/iceberg-warehouse-test";
@@ -81,10 +83,9 @@ public class DatabaseTest {
         assertEquals(100, firstRecord.getField("value"), "First record value should be 100");
         
         assertEquals("test2", secondRecord.getField("name"), "Second record name should be 'test2'");
-        assertEquals(200, secondRecord.getField("value"), "Second record value should be 200");
-    }
-
-    static java.util.stream.Stream<Arguments> provideColumnGroupDefs() throws Exception {
+        assertEquals(200, secondRecord.getField("value"), "Second record value should be 200");    }
+    
+    public static java.util.stream.Stream<Arguments> provideColumnGroupDefs() throws Exception {
         return java.util.stream.Stream.of(
             Arguments.of((Object) new TableBuilder.TableDef.ColumnGroupDef[] {
                 new TableBuilder.TableDef.ColumnGroupDef(

@@ -22,9 +22,12 @@ COPY src/main/resources/gdelt_og_schema.json /app/resources/
 ENV JAVA_OPTS="-Xmx2g -Xms1g"
 ENV ICEBERG_REST_URI="http://localhost:8181"
 ENV ICEBERG_WAREHOUSE="/app/warehouse"
+ENV SERVER_PORT="8080"
 
 RUN mkdir -p /app/warehouse
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -cp /app/buzzintake.jar BuzzIntake \"$@\"", "--"]
+EXPOSE 8080
 
-CMD ["--help"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/buzzintake.jar"]
+
+CMD []

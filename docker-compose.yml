@@ -18,16 +18,18 @@ services:
   buzzintake:
     build: .
     container_name: buzzintake
+    ports:
+      - "8080:8080"
     depends_on:
       - iceberg-init
     environment:
       - ICEBERG_REST_URI=http://iceberg-rest:8181/
       - ICEBERG_WAREHOUSE=/home/iceberg/warehouse
       - JAVA_OPTS=-Xmx2g -Xms1g
+      - SERVER_PORT=8080
     volumes:
       - ~/numbuzz-test-data/buzzintake-stage_data:/home/iceberg/warehouse
       - ~/numbuzz-test-data/buzzintake-app-data:/app/data:ro 
-    command: ["20250101000000"]  # Default date suffix, can be overridden
 volumes:
   iceberg-data:
     driver: local

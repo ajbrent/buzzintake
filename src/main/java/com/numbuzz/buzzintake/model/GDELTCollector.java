@@ -1,3 +1,5 @@
+package com.numbuzz.buzzintake.model;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -15,7 +17,7 @@ import org.apache.commons.csv.CSVRecord;
 public class GDELTCollector {
     private final String baseUrl;
 
-    GDELTCollector() {
+    public GDELTCollector() {
         baseUrl = "http://data.gdeltproject.org/gdeltv2/";
     }
 

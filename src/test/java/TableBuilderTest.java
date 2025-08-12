@@ -1,26 +1,38 @@
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.iceberg.data.GenericRecord;
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-class TableBuilderTest {
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.iceberg.data.GenericRecord;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-    void testPopulateTables() {
+import com.numbuzz.buzzintake.model.TableBuilder;
+
+public class TableBuilderTest {
+
+    public void testPopulateTables() {
 
     }
 
-    static Stream<Arguments> provideUnpackRowTestCases() throws IOException {
+    public static Stream<Arguments> provideUnpackRowTestCases() throws IOException {
         return Stream.of(
                 Arguments.of(
                         "Simple test with single value",
@@ -102,7 +114,7 @@ class TableBuilderTest {
 
     @ParameterizedTest
     @MethodSource("provideUnpackRowTestCases")
-    void testTableDefUnpackRow(
+    public void testTableDefUnpackRow(
             String testDescription,
             TableBuilder.TableDef.ColumnGroupDef[] columnGroupDefs,
             String tableName,
@@ -146,7 +158,7 @@ class TableBuilderTest {
         }
     }
 
-    static Stream<Arguments> provideCgParams() {
+    public static Stream<Arguments> provideCgParams() {
         return Stream.of(
                 Arguments.of(
                         new String[]{"col_1"},
@@ -170,7 +182,7 @@ class TableBuilderTest {
     }
     @ParameterizedTest
     @MethodSource("provideCgParams")
-    void testTableDefColumnGroupDefPopulate(
+    public void testTableDefColumnGroupDefPopulate(
             String[] names,
             String from,
             String[] types,
@@ -218,7 +230,7 @@ class TableBuilderTest {
         }
     }
 
-    static Stream<Arguments> provideRecordsToFileTestCases() throws IOException {
+    public static Stream<Arguments> provideRecordsToFileTestCases() throws IOException {
         return Stream.of(
                 Arguments.of(
                         "Basic functionality with multiple records",
@@ -283,7 +295,7 @@ class TableBuilderTest {
 
     @ParameterizedTest
     @MethodSource("provideRecordsToFileTestCases")
-    void testTableDefRecordsToFile(
+    public void testTableDefRecordsToFile(
             String testDescription,
             TableBuilder.TableDef.ColumnGroupDef[] columnGroupDefs,
             String tableName,
