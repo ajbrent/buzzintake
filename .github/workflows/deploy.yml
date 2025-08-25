@@ -38,12 +38,21 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Get ECR repo URL from Terraform output
+      - name: Get values from Terraform output
         run: |
           aws s3 cp s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/${{ secrets.TERRAFORM_STATE_KEY }} terraform.tfstate
           ECR_URL=$(terraform output -state=terraform.tfstate -raw buzz_intake_ecr_url)
+          S3_ENDPOINT_URL=$(terraform output -state=terraform.tfstate -raw s3_endpoint_url)
+          S3_BUCKET_NAME=$(terraform output -state=terraform.tfstate -raw s3_bucket_name)
+          ICEBERG_WAREHOUSE="s3://${S3_BUCKET_NAME}/main_wh"
           echo "ECR_URL=$ECR_URL" >> $GITHUB_ENV
+          echo "S3_ENDPOINT_URL=$S3_ENDPOINT_URL" >> $GITHUB_ENV
+          echo "S3_BUCKET_NAME=$S3_BUCKET_NAME" >> $GITHUB_ENV
+          echo "ICEBERG_WAREHOUSE=$ICEBERG_WAREHOUSE" >> $GITHUB_ENV
           echo "ECR repository URL: $ECR_URL"
+          echo "S3 endpoint URL: $S3_ENDPOINT_URL"
+          echo "S3 bucket name: $S3_BUCKET_NAME"
+          echo "Iceberg warehouse: $ICEBERG_WAREHOUSE"
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -51,8 +60,11 @@ jobs:
 
       - name: Build, tag, and push image to Amazon ECR
         run: |
-          # Build image
-          docker build -t buzzintake .
+          # Build image with build args
+          docker build \
+            --build-arg ICEBERG_REST_URI=$S3_ENDPOINT_URL \
+            --build-arg S3_BUCKET_NAME=$S3_BUCKET_NAME \
+            -t buzzintake .
           
           # Tag with commit SHA and latest
           docker tag buzzintake:latest $ECR_URL:$GITHUB_SHA
@@ -64,6 +76,8 @@ jobs:
           
           echo "Image pushed to $ECR_URL:$GITHUB_SHA"
           echo "Image pushed to $ECR_URL:latest"
+          echo "Built with ICEBERG_REST_URI: $S3_ENDPOINT_URL"
+          echo "Built with ICEBERG_WAREHOUSE: $ICEBERG_WAREHOUSE"
 
       - name: Update deployment info
         run: |

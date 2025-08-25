@@ -17,11 +17,13 @@ RUN cp target/buzzintake-1.0-SNAPSHOT.jar /app/buzzintake.jar
 RUN mkdir -p /app/resources
 COPY src/main/resources/gdelt_og_schema.json /app/resources/
 
-ENV ICEBERG_REST_URI="http://localhost:8181"
-ENV ICEBERG_WAREHOUSE="/app/warehouse"
+# Accept build args and set as environment variables
+ARG ICEBERG_REST_URI="http://localhost:8181"
+ARG S3_BUCKET_NAME="default"
+ARG ICEBERG_WAREHOUSE="s3://${S3_BUCKET_NAME}/warehouse"
+ENV ICEBERG_REST_URI=${ICEBERG_REST_URI}
+ENV ICEBERG_WAREHOUSE=${ICEBERG_WAREHOUSE}
 ENV SERVER_PORT="8080"
-
-RUN mkdir -p /app/warehouse
 
 EXPOSE 8080
 
