@@ -1,11 +1,73 @@
+name: Deploy to ECR
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  AWS_REGION: us-east-1  # Change to your region
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Run tests
+        run: mvn test
+
+      - name: Build application
+        run: mvn clean package -DskipTests
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Get ECR repo URL from Terraform output
         run: |
-          aws s3 cp s3://<your-bucket>/<your-key> terraform.tfstate
-          ECR_URL=$(terraform output -state=terraform.tfstate buzz_intake_ecr_url)
-          echo "ECR URL: $ECR_URL"
+          aws s3 cp s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/${{ secrets.TERRAFORM_STATE_KEY }} terraform.tfstate
+          ECR_URL=$(terraform output -state=terraform.tfstate -raw buzz_intake_ecr_url)
+          echo "ECR_URL=$ECR_URL" >> $GITHUB_ENV
+          echo "ECR repository URL: $ECR_URL"
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to Amazon ECR
+        run: |
+          # Build image
+          docker build -t buzzintake .
+          
+          # Tag with commit SHA and latest
+          docker tag buzzintake:latest $ECR_URL:$GITHUB_SHA
+          docker tag buzzintake:latest $ECR_URL:latest
+          
+          # Push both tags
+          docker push $ECR_URL:$GITHUB_SHA
+          docker push $ECR_URL:latest
+          
+          echo "Image pushed to $ECR_URL:$GITHUB_SHA"
+          echo "Image pushed to $ECR_URL:latest"
+
+      - name: Update deployment info
+        run: |
+          echo "Deployment completed successfully"
+          echo "Image: $ECR_URL:$GITHUB_SHA"
+          echo "Commit: $GITHUB_SHA"
+          echo "Timestamp: $(date -u)"
